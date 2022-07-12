@@ -7,13 +7,15 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CountDownLatch;
 
-public class StreamExample {
-  private final static Logger log = LoggerFactory.getLogger(StreamExample.class);
+public class DataProbeDriver {
+  private final static Logger log = LoggerFactory.getLogger(DataProbeDriver.class);
 
   public static void main(String[] args) throws Exception {
     CamelContext camelContext = new DefaultCamelContext();
 
-    camelContext.addRoutes(new StreamInOutBuilder());
+    camelContext.getRegistry().bind("packet-decoder", new PacketEventDecoder());
+
+    camelContext.addRoutes(new DispatchRouteBuilder());
 
     CountDownLatch latch = new CountDownLatch(1);
 
