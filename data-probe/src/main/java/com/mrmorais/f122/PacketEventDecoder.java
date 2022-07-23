@@ -1,6 +1,7 @@
 package com.mrmorais.f122;
 
-import com.mrmorais.f122.packets.Packet;
+import io.ppatierno.formula1.PacketDecoder;
+import io.ppatierno.formula1.packets.Packet;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.DatagramPacket;

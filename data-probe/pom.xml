@@ -34,6 +34,11 @@
             <version>${apache.camel.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-stream</artifactId>
+            <version>${apache.camel.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.mrmorais</groupId>
             <artifactId>f1-data-telemetry</artifactId>
             <version>1.0-SNAPSHOT</version>
