@@ -12,35 +12,32 @@ import io.ppatierno.formula1.enums.Sector;
 
 public class LapData {
 
-    public static final int SIZE = 53;
+    public static final int SIZE = 43;
 
     private float lastLapTime;
     private float currentLapTime;
     private int sector1TimeInMS;
     private int sector2TimeInMS;
-    private float bestLapTime;
-    private int bestLapNum;
-    private int bestLapSector1TimeInMS;
-    private int bestLapSector2TimeInMS;
-    private int bestLapSector3TimeInMS;
-    private int bestOverallSector1TimeInMS;
-    private short bestOverallSector1LapNum;
-    private int bestOverallSector2TimeInMS;
-    private short bestOverallSector2LapNum;
-    private int bestOverallSector3TimeInMS;
-    private short bestOverallSector3LapNum;
     private float lapDistance;
     private float totalDistance;
     private float safetyCarDelta;
     private short carPosition;
     private short currentLapNum;
     private PitStatus pitStatus;
+    private short numPitStops;
     private Sector sector;
     private short currentLapInvalid;
     private short penalties;
+    private short warnings;
+    private short numUnservedDriveThroughPens;
+    private short numUnservedStopGoPens;
     private short gridPosition;
     private DriverStatus driverStatus;
     private ResultStatus resultStatus;
+    private short pitLaneTimerActive;
+    private int pitLaneTimeInLaneInMS;
+    private int pitStopTimerInMS;
+    private short pitStopShouldServePen;
 
     /**
      * Fill the current LapData with the raw bytes representation
@@ -53,29 +50,26 @@ public class LapData {
         this.currentLapTime = buffer.readFloatLE();
         this.sector1TimeInMS = buffer.readUnsignedShortLE();
         this.sector2TimeInMS = buffer.readUnsignedShortLE();
-        this.bestLapTime = buffer.readFloatLE();
-        this.bestLapNum = buffer.readUnsignedByte();
-        this.bestLapSector1TimeInMS = buffer.readUnsignedShortLE();
-        this.bestLapSector2TimeInMS = buffer.readUnsignedShortLE();
-        this.bestLapSector3TimeInMS = buffer.readUnsignedShortLE();
-        this.bestOverallSector1TimeInMS = buffer.readUnsignedShortLE();
-        this.bestOverallSector1LapNum = buffer.readUnsignedByte();
-        this.bestOverallSector2TimeInMS = buffer.readUnsignedShortLE();
-        this.bestOverallSector2LapNum = buffer.readUnsignedByte();
-        this.bestOverallSector3TimeInMS = buffer.readUnsignedShortLE();
-        this.bestOverallSector3LapNum = buffer.readUnsignedByte();
         this.lapDistance = buffer.readFloatLE();
         this.totalDistance = buffer.readFloatLE();
         this.safetyCarDelta = buffer.readFloatLE();
         this.carPosition = buffer.readUnsignedByte();
         this.currentLapNum = buffer.readUnsignedByte();
         this.pitStatus = PitStatus.valueOf(buffer.readUnsignedByte());
+        this.numPitStops = buffer.readUnsignedByte();
         this.sector = Sector.valueOf(buffer.readUnsignedByte());
         this.currentLapInvalid = buffer.readUnsignedByte();
         this.penalties = buffer.readUnsignedByte();
+        this.warnings = buffer.readUnsignedByte();
+        this.numUnservedDriveThroughPens = buffer.readUnsignedByte();
+        this.numUnservedStopGoPens = buffer.readUnsignedByte();
         this.gridPosition = buffer.readUnsignedByte();
         this.driverStatus = DriverStatus.valueOf(buffer.readUnsignedByte());
         this.resultStatus = ResultStatus.valueOf(buffer.readUnsignedByte());
+        this.pitLaneTimerActive = buffer.readByte();
+        this.pitLaneTimeInLaneInMS = buffer.readUnsignedShortLE();
+        this.pitStopTimerInMS = buffer.readUnsignedShortLE();
+        this.pitStopShouldServePen = buffer.readUnsignedByte();
         return this;
     }
 
@@ -90,29 +84,26 @@ public class LapData {
         buffer.writeFloatLE(this.currentLapTime);
         buffer.writeShortLE(this.sector1TimeInMS);
         buffer.writeShortLE(this.sector2TimeInMS);
-        buffer.writeFloatLE(this.bestLapTime);
-        buffer.writeByte(this.bestLapNum);
-        buffer.writeShortLE(this.bestLapSector1TimeInMS);
-        buffer.writeShortLE(this.bestLapSector2TimeInMS);
-        buffer.writeShortLE(this.bestLapSector3TimeInMS);
-        buffer.writeShortLE(this.bestOverallSector1TimeInMS);
-        buffer.writeByte(this.bestOverallSector1LapNum);
-        buffer.writeShortLE(this.bestOverallSector2TimeInMS);
-        buffer.writeByte(this.bestOverallSector2LapNum);
-        buffer.writeShortLE(this.bestOverallSector3TimeInMS);
-        buffer.writeByte(this.bestOverallSector3LapNum);
         buffer.writeFloatLE(this.lapDistance);
         buffer.writeFloatLE(this.totalDistance);
         buffer.writeFloatLE(this.safetyCarDelta);
         buffer.writeByte(this.carPosition);
         buffer.writeByte(this.currentLapNum);
         buffer.writeByte(this.pitStatus.getValue());
+        buffer.writeByte(this.numPitStops);
         buffer.writeByte(this.sector.getValue());
         buffer.writeByte(this.currentLapInvalid);
         buffer.writeByte(this.penalties);
+        buffer.writeByte(this.warnings);
+        buffer.writeByte(this.numUnservedDriveThroughPens);
+        buffer.writeByte(this.numUnservedStopGoPens);
         buffer.writeByte(this.gridPosition);
         buffer.writeByte(this.driverStatus.getValue());
         buffer.writeByte(this.resultStatus.getValue());
+        buffer.writeByte(this.pitLaneTimerActive);
+        buffer.writeShortLE(this.pitLaneTimeInLaneInMS);
+        buffer.writeShortLE(this.pitStopTimerInMS);
+        buffer.writeByte(this.pitStopShouldServePen);
         return buffer;
     }
 
@@ -158,127 +149,6 @@ public class LapData {
 
     public void setSector2TimeInMS(int sector2TimeInMS) {
         this.sector2TimeInMS = sector2TimeInMS;
-    }
-
-    /**
-     * @return Best lap time of the session in seconds
-     */
-    public float getBestLapTime() {
-        return bestLapTime;
-    }
-
-    public void setBestLapTime(float bestLapTime) {
-        this.bestLapTime = bestLapTime;
-    }
-
-    /**
-     * @return Lap number best time achieved on
-     */
-    public int getBestLapNum() {
-        return bestLapNum;
-    }
-
-    public void setBestLapNum(int bestLapNum) {
-        this.bestLapNum = bestLapNum;
-    }
-
-    /**
-     * @return Sector 1 time of best lap in the session in milliseconds
-     */
-    public int getBestLapSector1TimeInMS() {
-        return bestLapSector1TimeInMS;
-    }
-
-    public void setBestLapSector1TimeInMS(int bestLapSector1TimeInMS) {
-        this.bestLapSector1TimeInMS = bestLapSector1TimeInMS;
-    }
-
-    /**
-     * @return Sector 2 time of best lap in the session in milliseconds
-     */
-    public int getBestLapSector2TimeInMS() {
-        return bestLapSector2TimeInMS;
-    }
-
-    public void setBestLapSector2TimeInMS(int bestLapSector2TimeInMS) {
-        this.bestLapSector2TimeInMS = bestLapSector2TimeInMS;
-    }
-
-    /**
-     * @return Sector 3 time of best lap in the session in milliseconds
-     */
-    public int getBestLapSector3TimeInMS() {
-        return bestLapSector3TimeInMS;
-    }
-
-    public void setBestLapSector3TimeInMS(int bestLapSector3TimeInMS) {
-        this.bestLapSector3TimeInMS = bestLapSector3TimeInMS;
-    }
-
-    /**
-     * @return Best overall sector 1 time of the session in milliseconds
-     */
-    public int getBestOverallSector1TimeInMS() {
-        return bestOverallSector1TimeInMS;
-    }
-
-    public void setBestOverallSector1TimeInMS(int bestOverallSector1TimeInMS) {
-        this.bestOverallSector1TimeInMS = bestOverallSector1TimeInMS;
-    }
-
-    /**
-     * @return Lap number best overall sector 1 time achieved on
-     */
-    public short getBestOverallSector1LapNum() {
-        return bestOverallSector1LapNum;
-    }
-
-    public void setBestOverallSector1LapNum(short bestOverallSector1LapNum) {
-        this.bestOverallSector1LapNum = bestOverallSector1LapNum;
-    }
-
-    /**
-     * @return Best overall sector 2 time of the session in milliseconds
-     */
-    public int getBestOverallSector2TimeInMS() {
-        return bestOverallSector2TimeInMS;
-    }
-
-    public void setBestOverallSector2TimeInMS(int bestOverallSector2TimeInMS) {
-        this.bestOverallSector2TimeInMS = bestOverallSector2TimeInMS;
-    }
-
-    /**
-     * @return Lap number best overall sector 2 time achieved on
-     */
-    public short getBestOverallSector2LapNum() {
-        return bestOverallSector2LapNum;
-    }
-
-    public void setBestOverallSector2LapNum(short bestOverallSector2LapNum) {
-        this.bestOverallSector2LapNum = bestOverallSector2LapNum;
-    }
-
-    /**
-     * @return Best overall sector 3 time of the session in milliseconds
-     */
-    public int getBestOverallSector3TimeInMS() {
-        return bestOverallSector3TimeInMS;
-    }
-
-    public void setBestOverallSector3TimeInMS(int bestOverallSector3TimeInMS) {
-        this.bestOverallSector3TimeInMS = bestOverallSector3TimeInMS;
-    }
-
-    /**
-     * @return Lap number best overall sector 3 time achieved on
-     */
-    public short getBestOverallSector3LapNum() {
-        return bestOverallSector3LapNum;
-    }
-
-    public void setBestOverallSector3LapNum(short bestOverallSector3LapNum) {
-        this.bestOverallSector3LapNum = bestOverallSector3LapNum;
     }
 
     /**
@@ -423,35 +293,120 @@ public class LapData {
         this.resultStatus = resultStatus;
     }
 
+    /**
+     * @return Number of pit stops taken in this race
+     */
+    public short getNumPitStops() {
+        return numPitStops;
+    }
+
+    public void setNumPitStops(short numPitStops) {
+        this.numPitStops = numPitStops;
+    }
+
+    /**
+     * @return Accumulated number of warnings issued
+     */
+    public short getWarnings() {
+        return warnings;
+    }
+
+    public void setWarnings(short warnings) {
+        this.warnings = warnings;
+    }
+
+    /**
+     * @return Num drive through pens left to serve
+     */
+    public short getNumUnservedDriveThroughPens() {
+        return numUnservedDriveThroughPens;
+    }
+
+    public void setNumUnservedDriveThroughPens(short numUnservedDriveThroughPens) {
+        this.numUnservedDriveThroughPens = numUnservedDriveThroughPens;
+    }
+
+    /**
+     * @return Num stop go pens left to serve
+     */
+    public short getNumUnservedStopGoPens() {
+        return numUnservedStopGoPens;
+    }
+
+    public void setNumUnservedStopGoPens(short numUnservedStopGoPens) {
+        this.numUnservedStopGoPens = numUnservedStopGoPens;
+    }
+
+    /**
+     * @return Pit lane timing, 0 = inactive, 1 = active
+     */
+    public short getPitLaneTimerActive() {
+        return pitLaneTimerActive;
+    }
+
+    public void setPitLaneTimerActive(short pitLaneTimerActive) {
+        this.pitLaneTimerActive = pitLaneTimerActive;
+    }
+
+    /**
+     * @return If active, the current time spent in the pit lane in ms
+     */
+    public int getPitLaneTimeInLaneInMS() {
+        return pitLaneTimeInLaneInMS;
+    }
+
+    public void setPitLaneTimeInLaneInMS(int pitLaneTimeInLaneInMS) {
+        this.pitLaneTimeInLaneInMS = pitLaneTimeInLaneInMS;
+    }
+
+    /**
+     * @return Time of the actual pit stop in ms
+     */
+    public int getPitStopTimerInMS() {
+        return pitStopTimerInMS;
+    }
+
+    public void setPitStopTimerInMS(int pitStopTimerInMS) {
+        this.pitStopTimerInMS = pitStopTimerInMS;
+    }
+
+    /**
+     * @return Whether the car should serve a penalty at this stop
+     */
+    public short getPitStopShouldServePen() {
+        return pitStopShouldServePen;
+    }
+
+    public void setPitStopShouldServePen(short pitStopShouldServePen) {
+        this.pitStopShouldServePen = pitStopShouldServePen;
+    }
+
     @Override
     public String toString() {
         return "LapData[lastLapTime=" + this.lastLapTime +
                 ",currentLapTime=" + this.currentLapTime +
                 ",sector1TimeInMS=" + this.sector1TimeInMS +
                 ",sector2TimeInMS=" + this.sector2TimeInMS +
-                ",bestLapTime=" + this.bestLapTime +
-                ",bestLapNum=" + this.bestLapNum +
-                ",bestLapSector1TimeInMS=" + this.bestLapSector1TimeInMS +
-                ",bestLapSector2TimeInMS=" + this.bestLapSector2TimeInMS +
-                ",bestLapSector3TimeInMS=" + this.bestLapSector3TimeInMS +
-                ",bestOverallSector1TimeInMS=" + this.bestOverallSector1TimeInMS +
-                ",bestOverallSector1LapNum=" + this.bestOverallSector1LapNum +
-                ",bestOverallSector2TimeInMS=" + this.bestOverallSector2TimeInMS +
-                ",bestOverallSector2LapNum=" + this.bestOverallSector2LapNum +
-                ",bestOverallSector3TimeInMS=" + this.bestOverallSector3TimeInMS +
-                ",bestOverallSector3LapNum=" + this.bestOverallSector3LapNum +
                 ",lapDistance=" + this.lapDistance +
                 ",totalDistance=" + this.totalDistance +
                 ",safetyCarDelta=" + this.safetyCarDelta +
                 ",carPosition=" + this.carPosition +
                 ",currentLapNum=" + this.currentLapNum +
                 ",pitStatus=" + this.pitStatus +
+                ",numPitStops=" + this.numPitStops +
                 ",sector=" + this.sector +
                 ",currentLapInvalid=" + this.currentLapInvalid +
                 ",penalties=" + this.penalties +
+                ",warnings=" + this.warnings +
+                ",numUnservedDriveThroughPens=" + this.numUnservedDriveThroughPens +
+                ",numUnservedStopGoPens=" + this.numUnservedStopGoPens +
                 ",gridPosition=" + this.gridPosition +
                 ",driverStatus=" + this.driverStatus +
                 ",resultStatus=" + this.resultStatus +
+                ",pitLaneTimerActive=" + this.pitLaneTimerActive +
+                ",pitLaneTimeInLaneInMS=" + this.pitLaneTimeInLaneInMS +
+                ",pitStopTimerInMS=" + this.pitStopTimerInMS +
+                ",pitStopShouldServePen=" + this.pitStopShouldServePen +
                 "]";
     }
 }

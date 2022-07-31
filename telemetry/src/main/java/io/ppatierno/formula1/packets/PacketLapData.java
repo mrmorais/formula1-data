@@ -19,12 +19,14 @@ import io.ppatierno.formula1.data.LapData;
  */
 public class PacketLapData extends Packet {
 
-    // 1190
+    // 972
     public static final int SIZE = PacketHeader.SIZE +
                                     LapData.SIZE * PacketConstants.CARS;
     
     private List<LapData> lapData = new ArrayList<>(PacketConstants.CARS);
 
+    private short timeTrialPBCarIdx;
+    private short timeTrialRivalCarIdx;
     /**
      * @return Lap data for all cars on track
      */
@@ -34,6 +36,28 @@ public class PacketLapData extends Packet {
 
     public void setLapData(List<LapData> lapData) {
         this.lapData = lapData;
+    }
+
+    /**
+     * @return Index of Personal Best car in time trial (255 if invalid)
+     */
+    public short getTimeTrialPBCarIdx() {
+        return timeTrialPBCarIdx;
+    }
+
+    public void setTimeTrialPBCarIdx(short timeTrialPBCarIdx) {
+        this.timeTrialPBCarIdx = timeTrialPBCarIdx;
+    }
+
+    /**
+     * @return Index of Rival car in time trial (255 if invalid)
+     */
+    public short getTimeTrialRivalCarIdx() {
+        return timeTrialRivalCarIdx;
+    }
+
+    public void setTimeTrialRivalCarIdx(short timeTrialRivalCarIdx) {
+        this.timeTrialRivalCarIdx = timeTrialRivalCarIdx;
     }
 
     @Override
@@ -55,6 +79,8 @@ public class PacketLapData extends Packet {
             LapData ld = new LapData();
             this.lapData.add(ld.fill(buffer));
         }
+        this.timeTrialPBCarIdx = buffer.readUnsignedByte();
+        this.timeTrialRivalCarIdx = buffer.readUnsignedByte();
         return this;
     }
 
@@ -64,6 +90,8 @@ public class PacketLapData extends Packet {
         for (LapData ld : this.lapData) {
             ld.fillBuffer(buffer);
         }
+        buffer.writeByte(this.timeTrialPBCarIdx);
+        buffer.writeByte(this.timeTrialRivalCarIdx);
         return buffer;
     }
 }
