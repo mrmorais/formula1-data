@@ -16,6 +16,7 @@ public class DataProbeDriver {
     camelContext.getRegistry().bind("packet-decoder", new PacketEventDecoder());
 
     camelContext.addRoutes(new DispatchRouteBuilder());
+    camelContext.addRoutes(new TelemetryRouteBuilder());
 
     CountDownLatch latch = new CountDownLatch(1);
 
